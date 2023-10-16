@@ -1,5 +1,6 @@
 -- Dependecis
 local QBCore = exports['qb-core']:GetCoreObject()
+-- local QBTarget = exports['qb-target'];
 
 -- RegisterNetEvent
 RegisterNetEvent("createWeedPlotEvent");
@@ -26,6 +27,14 @@ local function checkIfPlantCreated(WeedPlotTabel)
     end
     return true
 end 
+
+local function createWeedPlant(datae)
+    loadModel();
+    local weedPlant = CreateObjectNoOffset(table.unpack(datae));
+    if weedPlant == 0 then return end;
+
+    return weedPlant;
+end
 
 local function createWeedPlot()
     local weedPlot = {};
@@ -67,3 +76,19 @@ end);
 AddEventHandler("removeWeedPlotEvent", function() 
     return removeWeedPlots();
 end);
+
+options = {
+	name = "WeePlantZoneBox",
+	heading = 11.0,
+	debugPoly = true,
+	minZ = 30.77834,
+	maxZ = 30.87834,
+}
+
+
+local weedPlant = CreateObjectNoOffset(modelHash, vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z), true);
+
+local weedPlantCords = GetEntityCoords(weedPlant);
+
+local zoneBox = exports['qb-target']:AddBoxZone("WeePlantZoneBox",weedPlantCords,1,1,options);
+
