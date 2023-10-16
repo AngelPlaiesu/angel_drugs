@@ -5,7 +5,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 RegisterNetEvent("createWeedPlotEvent");
 
 -- Variables
-local modelHash = "prop_weed_01"
+local modelHash = GetHashKey ("prop_weed_01")
 
 -- Functions
 local function loadModel()
