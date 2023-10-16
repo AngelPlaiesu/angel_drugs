@@ -32,12 +32,12 @@ local function deleteWeedPlot(weedPlot)
     return true;
 end
 
-local function createWeedPlot()
+local function createWeedPlot(plotLocation)
     local weedPlot = {};
     local PlantData = {
-        x = Config.WeedPlotData.Location.x,
-        y = Config.WeedPlotData.Location.y,
-        z = Config.WeedPlotData.Location.z,
+        x = plotLocation.x,
+        y = plotLocation.y,
+        z = plotLocation.z,
         ObjectHash = Config.WeedPlant.ObjectHash
     };
     for i = 1, Config.WeedPlotData.Size, 1 do
@@ -51,12 +51,25 @@ local function createWeedPlot()
         return false;
     end
 
-    table.insert(weedPlots, weedPlot);
-    return true;
+    return weedPlot;
+end
+
+local function createWeedPlots()
+    for k,plot in pairs(Config.WeedPlotData.Locations) do
+        local weedPlot = createWeedPlot(plot)
+        if not createWeedPlot(plot) then return false else
+            table.insert(weedPlots, weedPlot);
+        end
+    end
+
+    return true
 end
 
 -- Handel Events
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-        if createWeedPlot() then print("WeedPlotCreated") else print("Failed")  end;
+        if createWeedPlots() then print("WeedPlotCreated") else print("Failed")  end;
 end)
+
 -- Play Gound
+
+--[[ createWeedPlots() ]]
