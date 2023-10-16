@@ -1,20 +1,15 @@
 Config = {}
 Config.WeedPlant = {}
-Config.WeedPlotData= {}
-Config.WeedPlant.ObjetHash = GetHashKey("prop_weed_01");
-Config.WeedPlant.ZoneOptions ={
-    name = "WeedMenuZone",
-    heading = 11.0,
-    debugPoly= true,
-}
+Config.WeedPlotData=  {}
 
-Config.WeedPlant.MenuOptions ={}
+Config.WeedPlant.ObjectHash = GetHashKey("prop_weed_01");
 
 Config.WeedPlotData.Size = 5
+
 Config.WeedPlotData.Location = {
-    x = 1462.63,
-    y = 1111.72,
-    z = 114.33
+    x = 1462.0,
+    y = 1113.0,
+    z = 114.0
 }
 
 

@@ -4,21 +4,10 @@ local QBTarget = exports[Config.Target];
 
 -- RegisterNetEvent
 
-
 -- Variables
 local weedPlots = {}
 
 -- Functions
-local function loadModel()
-    if not HasModelLoaded(Config.WeedPlant.ObjetHash) then
-        RequestModel(Config.WeedPlant.ObjetHash)
-        while not HasModelLoaded(Config.WeedPlant.ObjetHash) do
-            Citizen.Wait(1)
-        end
-    end
-
-end
-
 local function checkIfPlantCreated(WeedPlotTabel)
     for i, crop in ipairs(WeedPlotTabel) do
         if crop == 0 then
@@ -28,52 +17,46 @@ local function checkIfPlantCreated(WeedPlotTabel)
     return true
 end
 
-local function createWeedPlant(datae)
-    loadModel();
-    local weedPlant = CreateObjectNoOffset(table.unpack(datae));
-    if weedPlant == 0 then return end;
+local function createWeedPlant(PlantData)
+    local weedPlant = CreateObjectNoOffset(PlantData.ObjectHash, vector3(PlantData.x, PlantData.y, PlantData.z), false);
+    if weedPlant == 0 then print("WeedPlantFailed") return false end
 
     return weedPlant;
 end
 
-local function createWeedPlot()
-    local weedPlot = {};
-    local location = Config.WeedPlotData.Location;
-    local result;
-
-    loadModel();
-    for i = 1, Config.WeedPlotData.Size, 1 do
-        local weedPlant = CreateObjectNoOffset(Config.WeedPlant.ObjetHash, vector3(location.x, location.y - i, location.z), false);
-        table.insert(weedPlot, weedPlant);
+local function deleteWeedPlot(weedPlot)
+    for k, v in pairs(weedPlot) do
+        if v ~= 0 then DeleteObject(v) end
     end
-    if not checkIfPlantCreated(weedPlot) then
-        for k, v in pairs(weedPlot) do
-            if v ~= 0 then DeleteObject(v) end
-        end
-        print("WeedPlotFailed")
-        return;
-    end
-
-    print("WeedPlotCreated")
-    table.insert(weedPlots, weedPlot);
-    return;
+    print("WeedPlotDeleted")
+    return true;
 end
 
+local function createWeedPlot()
+    local weedPlot = {};
+    local PlantData = {
+        x = Config.WeedPlotData.Location.x,
+        y = Config.WeedPlotData.Location.y,
+        z = Config.WeedPlotData.Location.z,
+        ObjectHash = Config.WeedPlant.ObjectHash
+    };
+    for i = 1, Config.WeedPlotData.Size, 1 do
+        PlantData.y = PlantData.y - 1;
+        local weedPlant = createWeedPlant(PlantData);
+        if weedPlant then table.insert(weedPlot, weedPlant) else return false end
+    end
+    if not checkIfPlantCreated(weedPlot) then
+        deleteWeedPlot(weedPlot)
+        print("WeedPlotFailed")
+        return false;
+    end
+
+    table.insert(weedPlots, weedPlot);
+    return true;
+end
 
 -- Handel Events
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    return createWeedPlot();
+        if createWeedPlot() then print("WeedPlotCreated") else print("Failed")  end;
 end)
-
-
-AddEventHandler("plukkweed", function()
-    print("plukkweedEventTriggerd")
-end);
-
 -- Play Gound
---[[ local weedPlant = CreateObjectNoOffset(modelHash,vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z), true);
-local weedPlantCords = vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z);
-
-exports[Config.Target]:AddBoxZone("WeedPlant", weedPlantCords, 
-    { name="WeedPlant", heading = 3.68, debugPoly = false, minZ = 110.0, maxZ = 116.0 }, 
-    { options = { {  event = "angel_drugs:client:plukkweed", icon = "fas fa-box", label = "Plukk weed",}, },  distance = 2.0 }) ]]
