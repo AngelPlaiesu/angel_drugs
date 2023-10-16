@@ -3,22 +3,20 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local QBTarget = exports[Config.Target];
 
 -- RegisterNetEvent
-RegisterNetEvent("createWeedPlotEvent");
-RegisterNetEvent("removeWeedPlotEvent");
 
 
 -- Variables
-local modelHash = GetHashKey("prop_weed_01")
 local weedPlots = {}
 
 -- Functions
 local function loadModel()
-    if not HasModelLoaded(modelHash) then
-        RequestModel(modelHash)
-        while not HasModelLoaded(modelHash) do
+    if not HasModelLoaded(Config.WeedPlant.ObjetHash) then
+        RequestModel(Config.WeedPlant.ObjetHash)
+        while not HasModelLoaded(Config.WeedPlant.ObjetHash) do
             Citizen.Wait(1)
         end
     end
+
 end
 
 local function checkIfPlantCreated(WeedPlotTabel)
@@ -45,7 +43,7 @@ local function createWeedPlot()
 
     loadModel();
     for i = 1, Config.WeedPlotData.Size, 1 do
-        local weedPlant = CreateObjectNoOffset(modelHash, vector3(location.x, location.y - i, location.z), false);
+        local weedPlant = CreateObjectNoOffset(Config.WeedPlant.ObjetHash, vector3(location.x, location.y - i, location.z), false);
         table.insert(weedPlot, weedPlant);
     end
     if not checkIfPlantCreated(weedPlot) then
@@ -62,12 +60,10 @@ local function createWeedPlot()
 end
 
 
-
 -- Handel Events
-AddEventHandler("createWeedPlotEvent", function()
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     return createWeedPlot();
-end);
-
+end)
 
 
 AddEventHandler("plukkweed", function()
@@ -75,9 +71,9 @@ AddEventHandler("plukkweed", function()
 end);
 
 -- Play Gound
-local weedPlant = CreateObjectNoOffset(modelHash,vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z), true);
+--[[ local weedPlant = CreateObjectNoOffset(modelHash,vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z), true);
 local weedPlantCords = vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z);
 
 exports[Config.Target]:AddBoxZone("WeedPlant", weedPlantCords, 
     { name="WeedPlant", heading = 3.68, debugPoly = false, minZ = 110.0, maxZ = 116.0 }, 
-    { options = { {  event = "angel_drugs:client:plukkweed", icon = "fas fa-box", label = "Plukk weed",}, },  distance = 2.0 })
+    { options = { {  event = "angel_drugs:client:plukkweed", icon = "fas fa-box", label = "Plukk weed",}, },  distance = 2.0 }) ]]

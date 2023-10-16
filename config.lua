@@ -1,7 +1,7 @@
 Config = {}
 Config.WeedPlant = {}
 Config.WeedPlotData= {}
-
+Config.WeedPlant.ObjetHash = GetHashKey("prop_weed_01");
 Config.WeedPlant.ZoneOptions ={
     name = "WeedMenuZone",
     heading = 11.0,
