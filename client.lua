@@ -1,14 +1,16 @@
--- Dependecis
+-- Dependesies
 local QBCore = exports['qb-core']:GetCoreObject()
--- local QBTarget = exports['qb-target'];
+local QBTarget = exports[Config.Target];
 
 -- RegisterNetEvent
 RegisterNetEvent("createWeedPlotEvent");
 RegisterNetEvent("removeWeedPlotEvent");
 
+
 -- Variables
-local modelHash = GetHashKey ("prop_weed_01")
+local modelHash = GetHashKey("prop_weed_01")
 local weedPlots = {}
+
 -- Functions
 local function loadModel()
     if not HasModelLoaded(modelHash) then
@@ -26,7 +28,7 @@ local function checkIfPlantCreated(WeedPlotTabel)
         end
     end
     return true
-end 
+end
 
 local function createWeedPlant(datae)
     loadModel();
@@ -47,7 +49,7 @@ local function createWeedPlot()
         table.insert(weedPlot, weedPlant);
     end
     if not checkIfPlantCreated(weedPlot) then
-        for k,v in pairs(weedPlot) do
+        for k, v in pairs(weedPlot) do
             if v ~= 0 then DeleteObject(v) end
         end
         print("WeedPlotFailed")
@@ -59,36 +61,23 @@ local function createWeedPlot()
     return;
 end
 
-local function removeWeedPlots()
-    for k,plot in pairs(weedPlots) do
-        for k,plant in pairs(plot) do
-            if plant then DeleteObject(plant) end
-        end
-    end
-end
 
 
 -- Handel Events
-AddEventHandler("createWeedPlotEvent", function() 
+AddEventHandler("createWeedPlotEvent", function()
     return createWeedPlot();
 end);
 
-AddEventHandler("removeWeedPlotEvent", function() 
-    return removeWeedPlots();
+
+
+AddEventHandler("plukkweed", function()
+    print("plukkweedEventTriggerd")
 end);
 
-options = {
-	name = "WeePlantZoneBox",
-	heading = 11.0,
-	debugPoly = true,
-	minZ = 30.77834,
-	maxZ = 30.87834,
-}
+-- Play Gound
+local weedPlant = CreateObjectNoOffset(modelHash,vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z), true);
+local weedPlantCords = vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z);
 
-
-local weedPlant = CreateObjectNoOffset(modelHash, vector3(Config.WeedPlotData.Location.x, Config.WeedPlotData.Location.y, Config.WeedPlotData.Location.z), true);
-
-local weedPlantCords = GetEntityCoords(weedPlant);
-
-local zoneBox = exports['qb-target']:AddBoxZone("WeePlantZoneBox",weedPlantCords,1,1,options);
-
+exports[Config.Target]:AddBoxZone("WeedPlant", weedPlantCords, 
+    { name="WeedPlant", heading = 3.68, debugPoly = false, minZ = 110.0, maxZ = 116.0 }, 
+    { options = { {  event = "angel_drugs:client:plukkweed", icon = "fas fa-box", label = "Plukk weed",}, },  distance = 2.0 })
