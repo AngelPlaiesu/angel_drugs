@@ -1,10 +1,15 @@
+-- Dependecis
 local QBCore = exports['qb-core']:GetCoreObject()
+-- RegisterNetEvent
+RegisterServerEvent("createWeedPlotEvent")
+RegisterServerEvent("removeWeedPlotEvent")
 
-RegisterNetEvent("createWeedPlotEvent")
-
-
+-- Register Commands
 RegisterCommand("createweedplot", function()
-    TriggerClientEvent("createWeedPlotEvent", -1);
-    
-    return print("Event Sendt");
+    return TriggerClientEvent("createWeedPlotEvent", -1);
 end)
+
+RegisterCommand("removeweedplot", function()
+    return TriggerClientEvent("removeWeedPlotEvent", -1);
+end)
+
