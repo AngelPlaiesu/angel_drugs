@@ -43,7 +43,7 @@ local function createWeedPlot(plotLocation)
     for i = 1, Config.WeedPlotData.Size, 1 do
         PlantData.y = PlantData.y - 1;
         local weedPlant = createWeedPlant(PlantData);
-        if weedPlant then table.insert(weedPlot, weedPlant) else return false end
+        if weedPlant then weedPlot[#weedPlot+1] = weedPlant else return false end;
     end
     if not checkIfPlantCreated(weedPlot) then
         deleteWeedPlot(weedPlot)
@@ -58,7 +58,7 @@ local function createWeedPlots()
     for k,plot in pairs(Config.WeedPlotData.Locations) do
         local weedPlot = createWeedPlot(plot)
         if not createWeedPlot(plot) then return false else
-            table.insert(weedPlots, weedPlot);
+            weedPlots[#weedPlots+1] = weedPlot
         end
     end
 
