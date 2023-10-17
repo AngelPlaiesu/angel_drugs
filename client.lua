@@ -66,10 +66,54 @@ local function createWeedPlots()
 end
 
 -- Handel Events
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+--[[ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
         if createWeedPlots() then print("WeedPlotCreated") else print("Failed")  end;
-end)
+end) ]]
+local PlantData = {
+    x = Config.WeedPlotData.Locations[0].x,
+    y = Config.WeedPlotData.Locations[0].y,
+    z = Config.WeedPlotData.Locations[0].z,
+    ObjectHash = Config.WeedPlant.ObjectHash
+}
 
 -- Play Gound
+local WeedPlant = createWeedPlant(PlantData)
+local WeedPlantId = json.encode(WeedPlant)
 
+-- exports['qb-target']:AddCircleZone("WeedBox")
 --[[ createWeedPlots() ]]
+local WeedAddBoxZone = exports['qtarget']:AddBoxZone("WeedBox-".. WeedPlantId, vector3(PlantData.x, PlantData.y, PlantData.z), 3, 3, {
+	name="WeedBox-".. WeedPlantId,
+	heading=11.0,
+	debugPoly=false,
+    length = 5.0,
+    width = 4.0,
+	minZ=PlantData.y - 10.0,
+	maxZ=PlantData.y + 10.0,
+	},
+    {
+		options = {
+			{
+                type = "client",
+				event = "angel_drugs:weed",
+				icon = "fas fa-sign-in-alt",
+				label = "Test2",
+			},
+			{
+                type = "client",
+				event = "angel_drugs:weed1",
+				icon = "fas fa-sign-out-alt",
+				label = "Test",
+			},
+		},
+		distance = 3.5,
+})
+
+AddEventHandler("angel_drugs:weed", function ()
+    print("Passed")
+end)
+AddEventHandler("angel_drugs:weed1", function ()
+    print("Passed")
+end)
+
+print(WeedAddBoxZone)
