@@ -115,7 +115,6 @@ AddEventHandler("angel_drugs:weedPickUp", function()
         return false
     end
     QBCore.Functions.Progressbar('WeedPickUp', 'Collecting Weed', 2000, false, true, {
-
         disableMovement = true,
         disableCarMovement = true,
         disableMouse = false,
