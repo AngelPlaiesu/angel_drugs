@@ -3,7 +3,6 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local QBTarget = exports['qtarget'];
 
 -- RegisterNetEvent
-RegisterNetEvent("angel_drugs:weedPickUp")
 
 -- Variables
 local weedPlots = {}
@@ -99,15 +98,43 @@ local function createWeedPlots()
     return true
 end
 
--- Handel Events
+local function callback()
 
+end
+-- Handel Events
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     if createWeedPlots() then print("WeedPlotCreated") else print("Failed") end;
 end)
 
 AddEventHandler("angel_drugs:weedPickUp", function()
-    print("Client")
-    TriggerServerEvent("angel_drugs:weedPickUp:ServerSide", QBCore.Functions.GetPlayerData());
+    local PlayerData = QBCore.Functions.GetPlayerData();
+
+    -- print(json.encode(PlayerData,{indent = true}))
+    if PlayerData.money.cash < 200 then
+        return false
+    end
+    QBCore.Functions.Progressbar('WeedPickUp', 'Collecting Weed', 2000, false, true, {
+        disableMovement = true,
+        disableCarMovement = true,
+        disableMouse = false,
+        disableCombat = false
+        }, {}, {}, {}, function()
+            -- This code runs if the progress bar completes successfully
+            print("Weed Collected - 200 + Weed x1")
+            -- TriggerServerEvent('MyEvent')
+        end, function()
+            return
+    end)
+
+--[[     QBCore.Functions.TriggerCallback("angel_drugs:weedPickUp:Server", function(res)
+        print(res)
+    end, 'my_parameter_name') ]]
+
 end)
 
 -- Play Gound
+
+TriggerServerEvent('my_custom_event')
+
+print("Done")
+

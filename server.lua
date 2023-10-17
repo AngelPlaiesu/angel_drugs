@@ -3,12 +3,11 @@ local QBCore = exports['qb-core']:GetCoreObject()
 -- Variables
 
 -- RegisterNetEvent
-
--- Register Commands
-
+RegisterNetEvent('my_custom_event')
 --Handle Events
 
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    print("Server Side Receice")
+AddEventHandler('my_custom_event', function()
+    print('Received data from client: ')
+    -- Process the data received from the client
 end)

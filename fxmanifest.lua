@@ -5,11 +5,14 @@ shared_scripts {
     'config.lua',
 }
 
-client_scripts {
-    'client.lua'
+-- Specify the resource's dependencies
+dependencies {
+    'qb-core',
 }
-server_script {
-    'server.lua'
-}
+
+-- Specify the main script file
+client_script 'client.lua'
+server_script 'server.lua'
+
 
 lua54 'yes'
