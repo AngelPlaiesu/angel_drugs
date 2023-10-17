@@ -1,6 +1,12 @@
 Config = {}
+
 Config.WeedPlant = {}
 Config.WeedPlotData=  {}
+Config.Weed = {}
+
+Config.Weed.Price = 200
+Config.Weed.Ammount = 2
+Config.Weed.item = "weed_og-kush"
 
 Config.WeedPlant.ObjectHash = GetHashKey("prop_weed_01");
 
