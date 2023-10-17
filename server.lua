@@ -5,3 +5,10 @@ local QBCore = exports['qb-core']:GetCoreObject()
 -- RegisterNetEvent
 
 -- Register Commands
+
+--Handle Events
+
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    print("Server Side Receice")
+end)

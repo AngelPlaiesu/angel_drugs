@@ -1,8 +1,9 @@
 -- Dependesies
 local QBCore = exports['qb-core']:GetCoreObject()
-local QBTarget = exports[Config.Target];
+local QBTarget = exports['qtarget'];
 
 -- RegisterNetEvent
+RegisterNetEvent("angel_drugs:weedPickUp")
 
 -- Variables
 local weedPlots = {}
@@ -17,10 +18,41 @@ local function checkIfPlantCreated(WeedPlotTabel)
     return true
 end
 
-local function createWeedPlant(PlantData)
-    local weedPlant = CreateObjectNoOffset(PlantData.ObjectHash, vector3(PlantData.x, PlantData.y, PlantData.z), false);
-    if weedPlant == 0 then print("WeedPlantFailed") return false end
+local function createWeedBoxZone(weedPlant, weedPlantCords)
+    local WeedPlantIDString = json.encode(WeedPlant);
 
+    local WeedAddBoxZoneCords = vector3(weedPlantCords.x, weedPlantCords.y, weedPlantCords.z) + vector3(0, 0, 1)
+
+    local WeedAddBoxZone = exports['qtarget']:AddBoxZone("WeedBox-" .. WeedPlantIDString, WeedAddBoxZoneCords, 1, 1, {
+            name = "WeedBox-" .. WeedPlantIDString,
+            heading = 11.0,
+            debugPoly = true,
+            minZ = weedPlantCords.z,
+            maxZ = weedPlantCords.z + 2,
+        },
+        {
+            options = {
+                {
+                    type = "client",
+                    event = "angel_drugs:weedPickUp",
+                    icon = "fas fa-hand-holding-water",
+                    label = "Test2",
+                },
+            },
+            distance = 2.0,
+        })
+
+    return WeedAddBoxZone
+end
+
+local function createWeedPlant(plantData)
+    local weedPlatCords = vector3(plantData.x, plantData.y, plantData.z)
+    local weedPlant = CreateObjectNoOffset(plantData.ObjectHash, weedPlatCords, false);
+    if weedPlant == 0 then
+        print("WeedPlantFailed")
+        return false
+    end
+    local BoxZone = createWeedBoxZone(WeedPlant, weedPlatCords);
     return weedPlant;
 end
 
@@ -43,7 +75,7 @@ local function createWeedPlot(plotLocation)
     for i = 1, Config.WeedPlotData.Size, 1 do
         PlantData.y = PlantData.y - 1;
         local weedPlant = createWeedPlant(PlantData);
-        if weedPlant then weedPlot[#weedPlot+1] = weedPlant else return false end;
+        if weedPlant then weedPlot[#weedPlot + 1] = weedPlant else return false end;
     end
     if not checkIfPlantCreated(weedPlot) then
         deleteWeedPlot(weedPlot)
@@ -55,10 +87,12 @@ local function createWeedPlot(plotLocation)
 end
 
 local function createWeedPlots()
-    for k,plot in pairs(Config.WeedPlotData.Locations) do
+    for k, plot in pairs(Config.WeedPlotData.Locations) do
         local weedPlot = createWeedPlot(plot)
-        if not createWeedPlot(plot) then return false else
-            weedPlots[#weedPlots+1] = weedPlot
+        if not createWeedPlot(plot) then
+            return false
+        else
+            weedPlots[#weedPlots + 1] = weedPlot
         end
     end
 
@@ -66,54 +100,14 @@ local function createWeedPlots()
 end
 
 -- Handel Events
---[[ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-        if createWeedPlots() then print("WeedPlotCreated") else print("Failed")  end;
-end) ]]
-local PlantData = {
-    x = Config.WeedPlotData.Locations[0].x,
-    y = Config.WeedPlotData.Locations[0].y,
-    z = Config.WeedPlotData.Locations[0].z,
-    ObjectHash = Config.WeedPlant.ObjectHash
-}
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    if createWeedPlots() then print("WeedPlotCreated") else print("Failed") end;
+end)
+
+AddEventHandler("angel_drugs:weedPickUp", function()
+    print("Client")
+    TriggerServerEvent("angel_drugs:weedPickUp:ServerSide", QBCore.Functions.GetPlayerData());
+end)
 
 -- Play Gound
-local WeedPlant = createWeedPlant(PlantData)
-local WeedPlantId = json.encode(WeedPlant)
-
--- exports['qb-target']:AddCircleZone("WeedBox")
---[[ createWeedPlots() ]]
-local WeedAddBoxZone = exports['qtarget']:AddBoxZone("WeedBox-".. WeedPlantId, vector3(PlantData.x, PlantData.y, PlantData.z), 3, 3, {
-	name="WeedBox-".. WeedPlantId,
-	heading=11.0,
-	debugPoly=false,
-    length = 5.0,
-    width = 4.0,
-	minZ=PlantData.y - 10.0,
-	maxZ=PlantData.y + 10.0,
-	},
-    {
-		options = {
-			{
-                type = "client",
-				event = "angel_drugs:weed",
-				icon = "fas fa-sign-in-alt",
-				label = "Test2",
-			},
-			{
-                type = "client",
-				event = "angel_drugs:weed1",
-				icon = "fas fa-sign-out-alt",
-				label = "Test",
-			},
-		},
-		distance = 3.5,
-})
-
-AddEventHandler("angel_drugs:weed", function ()
-    print("Passed")
-end)
-AddEventHandler("angel_drugs:weed1", function ()
-    print("Passed")
-end)
-
-print(WeedAddBoxZone)
