@@ -3,7 +3,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 -- Variables
 
 -- RegisterNetEvent
-RegisterNetEvent('my_custom_event')
+RegisterServerEvent('my_custom_event')
 --Handle Events
 
 

@@ -111,9 +111,11 @@ AddEventHandler("angel_drugs:weedPickUp", function()
 
     -- print(json.encode(PlayerData,{indent = true}))
     if PlayerData.money.cash < 200 then
+        TriggerServerEvent('my_custom_event')
         return false
     end
     QBCore.Functions.Progressbar('WeedPickUp', 'Collecting Weed', 2000, false, true, {
+        
         disableMovement = true,
         disableCarMovement = true,
         disableMouse = false,
