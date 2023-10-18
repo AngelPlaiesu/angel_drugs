@@ -25,6 +25,56 @@ local function uuid()
     end)
 end
 
+--Tables:
+
+local function createTableBoxZone(tableCords)
+    local boxZoneID = uuid();
+
+    local RefineTableBoxCords = vector3(tableCords.x, tableCords.y, tableCords.z) + vector3(0, 0, .2)
+
+    local RefineTableBoxZone = QBTarget:AddBoxZone("RefineTable-" .. boxZoneID, RefineTableBoxCords, 2, 1, {
+            name = "RefineTable-" .. boxZoneID,
+            heading = 11.0,
+            debugPoly = true,
+            minZ = tableCords.z,
+            maxZ = tableCords.z + 1,
+        },
+        {
+            options = {
+                {
+                    type = "client",
+                    event = "angel_drugs:refineWeed",
+                    icon = "fas fa-hand-holding-water",
+                    label = "Refine Weed",
+                },
+            },
+            distance = 2.0,
+        })
+
+    return RefineTableBoxZone
+end
+
+local function createRefineTable(tableData)
+    local tableCords = vector3(tableData.x, tableData.y, tableData.z)
+    local refineTable = CreateObjectNoOffset(Config.RefineTables.ObjectHash, tableCords, false);
+    if refineTable == 0 then
+        print("WeedPlantFailed")
+        return false
+    end
+    local BoxZone = createTableBoxZone(tableCords);
+    return refineTable;
+end
+
+local function createRefineTables()
+    for k, cords in pairs(Config.RefineTables.Locations) do
+        local table = createRefineTable(cords)
+        if not table then return false end;
+        refineTables[#refineTables + 1] = table
+    end
+
+    return true
+end
+
 --weed:
 local function createWeedBoxZone(weedPlantCords)
     local boxZoneID = uuid();
@@ -54,7 +104,7 @@ end
 
 local function createWeedPlant(plantData)
     local weedPlatCords = vector3(plantData.x, plantData.y, plantData.z)
-    local weedPlant = CreateObjectNoOffset(Config.WeedPlant.ObjectHash, weedPlatCords, false);
+    local weedPlant = CreateObjectNoOffset(Config.Weed.ObjectHash, weedPlatCords, false);
     if weedPlant == 0 then
         print("WeedPlantFailed")
         return false
@@ -101,55 +151,7 @@ local function createWeedPlots()
 
     return true
 end
-
---Tables:
-local function createTableBoxZone(tableCords)
-    local boxZoneID = uuid();
-
-    local RefineTableBoxCords = vector3(tableCords.x, tableCords.y, tableCords.z) + vector3(0, 0, .2)
-
-    local RefineTableBoxZone = QBTarget:AddBoxZone("RefineTable-" .. boxZoneID, RefineTableBoxCords, 2, 1, {
-            name = "RefineTable-" .. boxZoneID,
-            heading = 11.0,
-            debugPoly = true,
-            minZ = tableCords.z,
-            maxZ = tableCords.z + 1,
-        },
-        {
-            options = {
-                {
-                    type = "client",
-                    event = "angel_drugs:refineWeed",
-                    icon = "fas fa-hand-holding-water",
-                    label = "Refine Weed",
-                },
-            },
-            distance = 2.0,
-        })
-
-    return RefineTableBoxZone
-end
-
-local function createRefineTable(tableData)
-    local tableCords = vector3(tableData.x, tableData.y, tableData.z)
-    local refineTable = CreateObjectNoOffset(Config.WeedRefineTable.ObjectHash, tableCords, false);
-    if refineTable == 0 then
-        print("WeedPlantFailed")
-        return false
-    end
-    local BoxZone = createTableBoxZone(tableCords);
-    return refineTable;
-end
-
-local function createRefineTables()
-    for k, cords in pairs(Config.WeedRefineTable.Locations) do
-        local table = createRefineTable(cords)
-        if not table then return false end;
-        refineTables[#refineTables + 1] = table
-    end
-
-    return true
-end
+-- Meth
 
 -- Handel Events
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -157,6 +159,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     if createRefineTables() then print("RefineTablesCreated") else print("RefineTables: Failed") end;
 end)
 
+--Weed Events
 AddEventHandler("angel_drugs:weedPickUp", function()
     local PlayerData = QBCore.Functions.GetPlayerData()
     if PlayerData.money.cash > Config.Weed.Price then

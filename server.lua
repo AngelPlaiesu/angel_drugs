@@ -19,9 +19,8 @@ end
 
 local function refienWeed(playerscr)
     local Player = QBCore.Functions.GetPlayer(playerscr)
-    local PlayerData = Player.PlayerData;
-    if QBCore.Functions.HasItem(Config.Weed.item) then
-        --  Player.Functions.RemoveItem(Config.Weed.item, 1)
+    if Player.Functions.GetItemByName(Config.Weed.item) then
+        Player.Functions.RemoveItem(Config.Weed.item, 1)
         Player.Functions.AddItem(Config.Weed.RefinedItem, 5)
     end
     return;
